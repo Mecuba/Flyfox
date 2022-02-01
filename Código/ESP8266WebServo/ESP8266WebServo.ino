@@ -112,14 +112,14 @@ void loop(){
 
               sliderNum = valueString.toInt();
               
-              if(sliderNum < 110 && sliderNum > 100) 
+              if(sliderNum < 110 && sliderNum > 100) //Zona muerta para dejar quieto el servo
               {
                 myservo.detach();
                 flag = false;
               }
               else 
               {
-                if(flag == false)
+                if(flag == false) //Para que sólo se Attach-ee una vez saliendo de la zona muerta
                 {
                   myservo.attach(servoPin);
                   flag = true;
