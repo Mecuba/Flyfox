@@ -18,7 +18,7 @@ const char* password = "8eAYgaeY";
 
 //INiciamos el sevidor en el puerto 80: 
 ESP8266WebServer server(80);
-WebSocketsServer webSockets = WebSocketsServer(81); 
+WebSocketsServer webSockets = WebSocketsServer(80); 
 
 //Manejo de peticiones: 
 void handle_root(){
@@ -35,6 +35,39 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
   if(type == WStype_TEXT) //receive text from client
   {
     
+  // Figure out the type of WebSocket event
+  switch(type) {
+
+    // Client has disconnected
+    case WStype_DISCONNECTED:
+      Serial.printf("[%u] Disconnected!\n", num);
+      break;
+
+    // New client has connected
+    case WStype_CONNECTED:
+      {
+        IPAddress ip = webSockets.remoteIP(num);
+        Serial.printf("[%u] Connection from ", num);
+        Serial.println(ip.toString());
+      }
+      break;
+
+    // Echo text message back to client
+    case WStype_TEXT:
+      Serial.printf("[%u] Text: %s\n", num, payload);
+      webSockets.sendTXT(num, payload);
+      break;
+
+    // For everything else: do nothing
+    case WStype_BIN:
+    case WStype_ERROR:
+    case WStype_FRAGMENT_TEXT_START:
+    case WStype_FRAGMENT_BIN_START:
+    case WStype_FRAGMENT:
+    case WStype_FRAGMENT_FIN:
+    default:
+      break;
+  }
   }
 }
 
