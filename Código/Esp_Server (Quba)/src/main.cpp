@@ -34,20 +34,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
   if(type == WStype_TEXT) //receive text from client
   {
-    byte separator=payloadString.indexOf('=');
-    String var = payloadString.substring(0,separator);
-    Serial.print("var= ");
-    Serial.println(var);
-    String val = payloadString.substring(separator+1);
-    Serial.print("val= ");
-    Serial.println(val);
-    Serial.println(" ");
-
-    // if(var == "LEDonoff")
-    // {
-    //   LEDonoff = false;
-    //   if(val == "ON") LEDonoff = true;
-    // }
+    
   }
 }
 
@@ -78,9 +65,4 @@ void setup() {
 void loop() {
   server.handleClient();
   webSockets.loop();
-  
-  // Escribir un JSON //
-  String LEDstatus = "OFF";
-  JSONtxt = "{\"LEDonoff\":\""+LEDstatus+"\"}";
-  webSockets.broadcastTXT(JSONtxt);
 }
