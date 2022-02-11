@@ -1,6 +1,6 @@
 import websocket
 ws = websocket.WebSocket()
-ws.connect("ws://192.168.100.82")
+ws.connect("ws://192.168.100.82:81")
 print("Connected to WebSocket server")
 
 # Ask the user for some input and transmit it
