@@ -10,7 +10,8 @@
 #include <index.h>
 
 bool LEDonoff; 
-String JSONtxt; 
+bool play = false;  
+bool toggle = false; 
 
 /// ID ///
 const char* ssid = "MEGACABLE-979F";
@@ -19,6 +20,21 @@ const char* password = "8eAYgaeY";
 //INiciamos el sevidor en el puerto 80: 
 ESP8266WebServer server(80);
 WebSocketsServer webSockets = WebSocketsServer(81); 
+
+/// Funciones: ////
+bool toggle_button(bool toggle){
+    if (toggle == false){ 
+      Serial.println("Play"); 
+      return true; 
+    }else{
+      Serial.println("Stop"); 
+      return false;  
+    }
+}
+//Cambie el estdado de la variable
+bool change_toggle_true(){
+  return true; 
+}
 
 //Manejo de peticiones: 
 void handle_root(){
@@ -55,6 +71,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     // Echo text message back to client
     case WStype_TEXT:
       Serial.printf("[%u] Text: %s\n", num, payload);
+      play = toggle_button(toggle);
+      toggle = toggle_button(toggle); 
+
+      Serial.println(play); 
+      //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
       break;
 

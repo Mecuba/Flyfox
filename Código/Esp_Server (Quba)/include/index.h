@@ -70,7 +70,6 @@ String html = R"***(
             width: 100%;
             height: 13px;
             cursor: pointer;
-            animate: 0.2s;
             box-shadow: 0px 0px 0px #000000;
             background: #B5164B;
             border-radius: 25px;
@@ -94,7 +93,6 @@ String html = R"***(
             width: 100%;
             height: 13px;
             cursor: pointer;
-            animate: 0.2s;
             box-shadow: 0px 0px 0px #000000;
             background: #B5164B;
             border-radius: 25px;
@@ -113,7 +111,6 @@ String html = R"***(
             width: 100%;
             height: 13px;
             cursor: pointer;
-            animate: 0.2s;
             background: transparent;
             border-color: transparent;
             color: transparent;
@@ -168,16 +165,36 @@ String html = R"***(
     
     
     <script>
+        let socket = new WebSocket("ws://192.168.100.82:81")
+
+        //Datos recividos del servidor:
+        socket.onmessage = function (event) { 
+            alert(`"Datos recividos: ${event.data}"`)
+        }  
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
+            } else {
+                // ej. El proceso del servidor se detuvo o la red está caída
+                // event.code es usualmente 1006 en este caso
+                alert('[close] La conexión se cayó');
+            }
+        };
+                    
+
         var toggle = 0;
         //Toggle function: 
         function play(value){
-    
+            
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
+                socket.send(1)
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
+                socket.send("stop")
                 toggle = 0
             }
         }
