@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <WebSocketsServer.h>
+
 ///Pagina html index.html/// 
 #include <index.h>
 
@@ -14,7 +15,7 @@ bool play = false;
 bool toggle = false; 
 
 /// ID ///
-const char* ssid = "MEGACABLE-979F";
+const char* ssid = "EspAP";
 const char* password = "8eAYgaeY"; 
 
 //INiciamos el sevidor en el puerto 80: 
@@ -32,11 +33,8 @@ bool toggle_button(bool toggle){
     }
 }
 //Cambie el estdado de la variable
-bool change_toggle_true(){
-  return true; 
-}
 
-//Manejo de peticiones: 
+//Manejo de peticiones http: 
 void handle_root(){
   server.send(200, "text/html", html); 
 }
@@ -45,13 +43,10 @@ void handle_root(){
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)
 {
   String payloadString = (const char *)payload;
-  Serial.print("payloadString= ");
-  Serial.println(payloadString);
-
-  if(type == WStype_TEXT) //receive text from client
+  
+  if(type == WStype_TEXT) 
   {
-    
-  // Figure out the type of WebSocket event
+  // Que tipo de conexion es: 
   switch(type) {
 
     // Client has disconnected
@@ -94,16 +89,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
 void setup() {
   Serial.begin(9600);
-  WiFi.begin(ssid, password); 
-  Serial.print("\n\r ....");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(200);
-    Serial.print("No connected");
-  }
+  // WiFi.begin(ssid, password); 
+  // Serial.print("\n\r ....");
+  // while (WiFi.status() != WL_CONNECTED)
+  // {
+  //   delay(200);
+  //   Serial.print("No connected");
+  // }
 
-  Serial.println("Connected to wifi"); 
-  Serial.println("ip = ");
+  WiFi.softAP(ssid); 
+  IPAddress miIP = WiFi.softAPIP(); //IP por default: 192.168.4.1  
+  
+  Serial.println("IP del APoint"); 
+  Serial.println(miIP);
   Serial.println(WiFi.localIP()); 
 
   /////// Manejo de las req: /////

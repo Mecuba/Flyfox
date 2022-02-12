@@ -165,7 +165,7 @@ String html = R"***(
     
     
     <script>
-        let socket = new WebSocket("ws://192.168.100.82:81")
+        let socket = new WebSocket("ws://192.168.4.1:81")
 
         //Datos recividos del servidor:
         socket.onmessage = function (event) { 
