@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+#include <Arduino.h>
+String submit_html = R"***(
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +14,7 @@
             font-size: small;
         }
         .container{
-            height: 35vh;
+            height: 30vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -93,7 +95,7 @@
                 Contraseña
             </b>
             </div>
-            <input class=input id="contrasena" type="password" placeholder="Contraseña">
+            <input class=input id="contrasena" type="text" placeholder="Contraseña">
         </div>
         <div class="submit">
             <input id=submit class=button type="button" value="Enter" placeholder="Enter">
@@ -113,7 +115,7 @@
             var pasword = document.querySelector("#contrasena").value
 
             values = [nombre, pasword]
-            // socket.send(values)
+            socket.send(values)
             console.log(values)
         })
 
@@ -132,3 +134,4 @@
     </script>
 </body>
 </html>
+)***";
