@@ -1,7 +1,7 @@
 #include <Arduino.h>
 String html = R"***(
    
-    <html lang="en">
+  <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,38 +10,45 @@ String html = R"***(
     
         <style>
             .body{
-                background-color: rgb(41, 39, 39);
+                background-color: rgb(39, 41, 41);
             }
             .container{
-                position: relative;
-                top: 320px;
+                background-color: rgb(39, 41, 41);
+                display: flex;
+                
             }
             .header{
-                position: relative;
-                top: 120px;
+                background-color: rgb(39, 41, 41);
+
+                display: flex;
+                height: 30vh;
+                align-items: center;
+                justify-content: center;
             }
             .child{
                 background-color: #79018C;
                 border-radius: 20%;
-                position: absolute;
-                display: inline;
-                left: 36%;
-                width: 100px;
-                height: 100px;
-    
+                width: 25%;
+                height: 12vh;
+                position: relative;
             }
+
             .play{
                 background-color: rgba(132, 0, 255, 0);
-                border: 30px;
+                border: 29px;
+                border-radius: 9%;
                 border-style: solid;
                 border-color: rgba(255, 255, 255, 0) rgba(0, 0, 255, 0) rgba(255, 0, 0, 0) rgb(245, 245, 239);
                 height: 0;
+
                 position: absolute;
-                top: 19%;
-                left: 40%;
-                width: 0;
+                top: 50%;
+                left: 50%;
+                margin-top: -30px;
+                margin-left: -13px;
+                border-right-width: 0px;
             }
-    
+            
             .stop{
                 background-color: #79018C;
                 border: 20px;
@@ -50,10 +57,11 @@ String html = R"***(
                 border-width: 0px 0px 0px 39px;
                 border-color: rgb(255, 255, 255) rgb(255, 255, 255) rgb(255, 255, 255) rgb(255, 255, 255);
                 height: 43px;
-                position: relative;
-                top: 27%;
-                display: inline-block;
-                margin-left: 30%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -25px;
+                margin-left: -19px;
             }
     
             input[type=range] {
@@ -145,8 +153,7 @@ String html = R"***(
             }
             
             #vel_range{
-                background-color: rgb(41, 39, 39);
-    
+                background-color: rgb(39, 41, 41);
             }
         </style>
     
@@ -168,7 +175,7 @@ String html = R"***(
         let socket = new WebSocket("ws://192.168.4.1:81")
 
         //Datos recividos del servidor:
-        socket.onmessage = function (event) { 
+        socket.onmessage = (event) => { 
             alert(`"Datos recividos: ${event.data}"`)
         }  
 
@@ -189,12 +196,12 @@ String html = R"***(
             
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
-                socket.send(1)
+                // socket.send(1)
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
-                socket.send("stop")
+                // socket.send(0)
                 toggle = 0
             }
         }
