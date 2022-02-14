@@ -14,7 +14,7 @@ String submit_html = R"***(
             font-size: small;
         }
         .container{
-            height: 30vh;
+            height: 35vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -95,7 +95,7 @@ String submit_html = R"***(
                 Contraseña
             </b>
             </div>
-            <input class=input id="contrasena" type="text" placeholder="Contraseña">
+            <input class=input id="contrasena" type="password" placeholder="Contraseña">
         </div>
         <div class="submit">
             <input id=submit class=button type="button" value="Enter" placeholder="Enter">

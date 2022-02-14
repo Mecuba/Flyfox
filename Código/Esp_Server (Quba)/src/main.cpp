@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <WebSocketsServer.h>
+#include <string>
 
 ///Pagina html index.html/// 
 #include <index.h>
@@ -11,6 +12,10 @@
 bool LEDonoff; 
 bool play = false;  
 bool toggle = false; 
+
+String nombre_red = "empty"; 
+String pasword = "empty";
+
 
 /// ID ///
 const char* ssid = "EspAP";
@@ -62,10 +67,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     // Echo text message back to client
     case WStype_TEXT:
       Serial.printf("[%u] Text: %s\n", num, payload);
-      play = toggle_button(toggle);
-      toggle = toggle_button(toggle); 
+      // play = toggle_button(toggle);
+      // toggle = toggle_button(toggle); 
 
-      Serial.println(play); 
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
       break;
