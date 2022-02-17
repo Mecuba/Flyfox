@@ -1,7 +1,7 @@
 #include <Arduino.h>
 String html = R"***(
    
-  <html lang="en">
+ <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -161,50 +161,61 @@ String html = R"***(
     <body class="body">
         <div class="header">
             <div class="child"> 
-                <input type="button" class="play" onclick="play()">
+                <input type="button" class="play" id = "play" onclick="play()">
             </div>
         </div>
     
         <div class="container">
-            <input type="range" name="" id="vel_range">
+            <input type="range" name="" id="vel_range" value="50">
         </div>
     </body>
     
     
     <script>
-        let socket = new WebSocket("ws://192.168.4.1:81")
 
+        let socket = new WebSocket("ws://192.168.4.1:81")
+        
         //Datos recividos del servidor:
         socket.onmessage = (event) => { 
             alert(`"Datos recividos: ${event.data}"`)
         }  
 
-        socket.onclose = function(event) {
-            if (event.wasClean) {
-                alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
-            } else {
-                // ej. El proceso del servidor se detuvo o la red está caída
-                // event.code es usualmente 1006 en este caso
-                alert('[close] La conexión se cayó');
-            }
-        };
-                    
+        //Slider 
+        var vel_slider = document.querySelector("#vel_range")
+        vel_slider.onchange = () => {
+            socket.send(vel_slider.value)
+            console.log(vel_slider.value)
+        }
 
+        /// Play //
         var toggle = 0;
-        //Toggle function: 
         function play(value){
             
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
                 socket.send(1)
+                socket.send(1)
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
+                socket.send(1)
                 socket.send(0)
                 toggle = 0
             }
         }
+
+        // socket.onclose = function(event) {
+        //     if (event.wasClean) {
+        //         alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
+        //     } else {
+        //         // ej. El proceso del servidor se detuvo o la red está caída
+        //         // event.code es usualmente 1006 en este caso
+        //         alert('[close] La conexión se cayó');
+        //     }
+        // };
+
     </script>
+    </html>
     </html>
     )***";

@@ -12,7 +12,13 @@
 
 bool LEDonoff; 
 bool play = false;  
-bool toggle = false; 
+String playString; 
+uint8_t vel_range = 0;
+
+String play_stop[] = {"",""}; 
+
+//Contador
+int i = 0; 
 
 /// ID ///
 const char* ssid = "EspAP";
@@ -24,11 +30,9 @@ WebSocketsServer webSockets = WebSocketsServer(81);
 
 /// Funciones: ////
 bool toggle_button(bool toggle){
-    if (toggle == false){ 
-      Serial.println("Play"); 
+    if (toggle == false){  
       return true; 
     }else{
-      Serial.println("Stop"); 
       return false;  
     }
 }
@@ -66,10 +70,22 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     // Echo text message back to client
     case WStype_TEXT:
       Serial.printf("[%u] Text: %s\n", num, payload);
-      play = toggle_button(toggle);
-      toggle = toggle_button(toggle); 
+      
+      play_stop[i] = payloadString;
+      i ++ ; 
+      if (i >= 2){
+        if (play_stop[0] == "1"){
+          playString = payloadString;
+          Serial.println(playString);    
+        }
 
-      Serial.println(play); 
+        i = 0; 
+      }
+
+      //Slider: 
+      vel_range = payloadString.toInt();
+
+      Serial.println(vel_range); 
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
       break;
