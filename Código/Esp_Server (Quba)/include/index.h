@@ -196,12 +196,12 @@ String html = R"***(
             
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
-                // socket.send(1)
+                socket.send(1)
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
-                // socket.send(0)
+                socket.send(0)
                 toggle = 0
             }
         }
