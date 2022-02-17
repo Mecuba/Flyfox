@@ -12,7 +12,7 @@
 bool LEDonoff; 
 bool play = false;  
 bool toggle = false; 
-
+char str[30] ; 
 //Parametros de red: 
 String parametros_red[] = {"",""}; 
 
@@ -49,7 +49,7 @@ void control_root(){
 //Manejo de las peticiones de websockets: 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)
 {
-  String payloadString = (const char *)payload;
+  String payloadString = (char *)payload;
   
   if(type == WStype_TEXT) 
   {
@@ -72,26 +72,30 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
     // Echo text message back to client
     case WStype_TEXT:
+    {
       Serial.printf("[%u] Text: %s\n", num, payload);
       // play = toggle_button(toggle);
       // toggle = toggle_button(toggle); 
-      parametros_red[i] = payloadString;
-      i ++; 
-      if(i == 2){ 
-        // WiFi.begin(parametros_red[0], parametros_red[1]); 
+      
+      for (int i = 0; i < payloadString.length(); i++)
+      {
+        str[i] = {payloadString[i]};
+      }
+      
+      char* piece = strtok(str, ","); 
+      Serial.printf("string Payload: %s \n", piece); 
+
+      // WiFi.begin(parametros_red[0], parametros_red[1]); 
         // Serial.print("\n\r ....");
         // while (WiFi.status() != WL_CONNECTED)
         // {
         //   delay(200);
         //   Serial.print("No connected");
         // }
-        
-        i = 0; 
-      } 
-
-      Serial.printf("Variable 1: [%s] Variable 2: [%s]", parametros_red[0],parametros_red[1]);
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
+    }
+      
       break;
 
     // For everything else: do nothing
