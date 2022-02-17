@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <style>
-        body{
+        body {
             background-color: rgb(41, 39, 39);
-            font-family:'Courier New', Courier, monospace;
+            font-family: 'Courier New', Courier, monospace;
             font-size: small;
         }
-        .container{
+
+        .container {
             height: 40vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .titulo{
+
+        .titulo {
             height: 10vh;
             color: aliceblue;
             margin-top: 9%;
             margin-left: 2%;
             font-size: larger;
         }
-        .nombre{
+
+        .nombre {
             background-color: rgb(41, 39, 39);
             display: flex;
             flex-direction: column;
             justify-content: space;
             height: 4vh;
-            justify-content:space-between;
+            justify-content: space-between;
         }
-        .pasword{
+
+        .pasword {
             background-color: rgb(41, 39, 39);
             display: flex;
             flex-direction: column;
@@ -41,7 +46,8 @@
             justify-content: start;
             margin-top: 10%;
         }
-        .button{
+
+        .button {
             height: 40px;
             width: 100px;
             border: solid;
@@ -51,17 +57,18 @@
             color: rgb(255, 255, 255);
             margin-top: 9%;
             margin-left: 2%;
-           
+
         }
-        
-        .item{
+
+        .item {
             background-color: rgb(41, 39, 39);
             height: 4vh;
             font-size: medium;
             font-size: large;
             color: rgb(125, 171, 211);
         }
-        .input{
+
+        .input {
             background-color: rgb(41, 39, 39);
             height: 4vh;
             font-size: medium;
@@ -71,9 +78,10 @@
             border-style: solid;
         }
     </style>
-    
+
     <title>Submit</title>
 </head>
+
 <body>
     <div class="container">
         <div class="titulo">
@@ -89,9 +97,9 @@
         </div>
         <div class="pasword">
             <div class="item">
-            <b class="item">
-                Contraseña
-            </b>
+                <b class="item">
+                    Contraseña
+                </b>
             </div>
             <input class=input id="contrasena" type="password" placeholder="Contraseña">
         </div>
@@ -99,25 +107,26 @@
             <input id=submit class=button type="button" value="Enter" placeholder="Enter">
         </div>
     </div>
-    
+
     <script>
         let socket = new WebSocket("ws://192.168.4.1:81")
-         //Datos recividos del servidor:
-         socket.onmessage = function (event) { 
+        //Datos recividos del servidor:
+        socket.onmessage = function (event) {
             alert(`"Datos recividos: ${event.data}"`)
-        }  
-        
+        }
+
         let submit = document.getElementById("submit")
         submit.addEventListener("click", () => {
             var nombre = document.querySelector("#nombre").value
             var pasword = document.querySelector("#contrasena").value
 
             values = [nombre, pasword]
-            // socket.send(values)
-            console.log(values)
-        })
+            socket.send(nombre)
+            socket.send(pasword)
+            console.log(nombre)
+            console.log(pasword)
 
-        //Sockets: 
+        })
 
         // socket.onclose = function(event) {
         //     if (event.wasClean) {
@@ -128,7 +137,7 @@
         //         alert('[close] La conexión se cayó');
         //     }
         // };
-        
     </script>
 </body>
+
 </html>

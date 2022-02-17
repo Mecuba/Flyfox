@@ -13,13 +13,15 @@ bool LEDonoff;
 bool play = false;  
 bool toggle = false; 
 
-String nombre_red = "empty"; 
-String pasword = "empty";
+//Parametros de red: 
+String parametros_red[] = {"",""}; 
 
+//Contador: 
+int i = 0; 
 
 /// ID ///
-const char* ssid = "EspAP";
-const char* password = "8eAYgaeY"; 
+ const char* ssid = "EspAP";
+// const char* password = "8eAYgaeY"; 
 
 //INiciamos el sevidor en el puerto 80: 
 ESP8266WebServer server(80);
@@ -38,6 +40,10 @@ bool toggle_button(bool toggle){
 //Manejo de peticiones http: 
 void handle_root(){
   server.send(200, "text/html", submit_html); 
+}
+
+void control_root(){
+  server.send(200,"text/html", html);
 }
 
 //Manejo de las peticiones de websockets: 
@@ -69,7 +75,21 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       Serial.printf("[%u] Text: %s\n", num, payload);
       // play = toggle_button(toggle);
       // toggle = toggle_button(toggle); 
+      parametros_red[i] = payloadString;
+      i ++; 
+      if(i == 2){ 
+        // WiFi.begin(parametros_red[0], parametros_red[1]); 
+        // Serial.print("\n\r ....");
+        // while (WiFi.status() != WL_CONNECTED)
+        // {
+        //   delay(200);
+        //   Serial.print("No connected");
+        // }
+        
+        i = 0; 
+      } 
 
+      Serial.printf("Variable 1: [%s] Variable 2: [%s]", parametros_red[0],parametros_red[1]);
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
       break;
@@ -89,6 +109,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
 void setup() {
   Serial.begin(9600);
+
   // WiFi.begin(ssid, password); 
   // Serial.print("\n\r ....");
   // while (WiFi.status() != WL_CONNECTED)
@@ -106,6 +127,7 @@ void setup() {
 
   /////// Manejo de las req: /////
   server.on("/", handle_root); 
+  server.on("/control", control_root); 
   webSockets.onEvent(webSocketEvent);
   
   /// Inicio de los servidores ////

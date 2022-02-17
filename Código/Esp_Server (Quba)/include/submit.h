@@ -115,7 +115,8 @@ String submit_html = R"***(
             var pasword = document.querySelector("#contrasena").value
 
             values = [nombre, pasword]
-            socket.send(values)
+            socket.send(nombre)
+            socket.send(pasword)
             console.log(values)
         })
 
