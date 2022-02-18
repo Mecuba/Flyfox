@@ -12,12 +12,15 @@
 bool LEDonoff; 
 bool play = false;  
 bool toggle = false; 
+
+// Nombre y contrasena de al red: 
 char str[30] ; 
 //Parametros de red: 
 String parametros_red[] = {"",""}; 
 
 //Contador: 
 int i = 0; 
+ 
 
 /// ID ///
  const char* ssid = "EspAP";
@@ -35,7 +38,12 @@ bool toggle_button(bool toggle){
       return false;  
     }
 }
-//Cambie el estdado de la variable
+//Cambia el estdado de la variable
+// bool time_out(int prev_time){
+//   bool time_finish = false; 
+  
+//   return time_finish;
+// }
 
 //Manejo de peticiones http: 
 void handle_root(){
@@ -76,22 +84,38 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       Serial.printf("[%u] Text: %s\n", num, payload);
       // play = toggle_button(toggle);
       // toggle = toggle_button(toggle); 
-      
+
       for (int i = 0; i < payloadString.length(); i++)
       {
         str[i] = {payloadString[i]};
+      }  
+      char* nombre = strtok(str, ","); 
+      char* pasword = strtok(NULL, " "); 
+
+      Serial.printf("Nombre red: %s, Contrasena: %s \n", nombre, pasword); 
+
+      // Conexion a la red :
+      WiFi.begin(nombre, pasword); 
+      Serial.print("\n\r ....");
+      
+      int time_finish = 0; 
+      unsigned long int actual_time = millis();
+      unsigned long int prev_time = millis();
+
+      while ((WiFi.status() != WL_CONNECTED) || (time_finish != 1))
+      { 
+        actual_time = millis();
+        delay(200);
+        Serial.println("No connected");
+        Serial.println(time_finish);  
+        Serial.println(millis());
+        if(actual_time - prev_time > 20000){
+          prev_time = actual_time;
+          time_finish = 1;
+          Serial.printf("Acabo el tiempo \n");   
+        } 
       }
       
-      char* piece = strtok(str, ","); 
-      Serial.printf("string Payload: %s \n", piece); 
-
-      // WiFi.begin(parametros_red[0], parametros_red[1]); 
-        // Serial.print("\n\r ....");
-        // while (WiFi.status() != WL_CONNECTED)
-        // {
-        //   delay(200);
-        //   Serial.print("No connected");
-        // }
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
     }
