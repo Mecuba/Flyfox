@@ -6,7 +6,7 @@ String submit_html = R"***(
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <title>Submit</title>
     <style>
         body{
             background-color: rgb(41, 39, 39);
@@ -106,7 +106,7 @@ String submit_html = R"***(
         let socket = new WebSocket("ws://192.168.4.1:81")
          //Datos recividos del servidor:
          socket.onmessage = function (event) { 
-            alert(`"Datos recividos: ${event.data}"`)
+            alert(`"${event.data}"`)
         }  
         
         let submit = document.getElementById("submit")
@@ -122,15 +122,15 @@ String submit_html = R"***(
 
         //Sockets: 
 
-        // socket.onclose = function(event) {
-        //     if (event.wasClean) {
-        //         alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
-        //     } else {
-        //         // ej. El proceso del servidor se detuvo o la red está caída
-        //         // event.code es usualmente 1006 en este caso
-        //         alert('[close] La conexión se cayó');
-        //     }
-        // };
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
+            } else {
+                // ej. El proceso del servidor se detuvo o la red está caída
+                // event.code es usualmente 1006 en este caso
+                alert('[close] La conexión se cayó');
+            }
+        };
         
     </script>
 </body>

@@ -5,7 +5,7 @@ String html = R"***(
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>El inombrable</title>
+        <title>Control</title>
     
         <style>
             .body{
@@ -171,7 +171,7 @@ String html = R"***(
     
     
     <script>
-        let socket = new WebSocket("ws://192.168.4.1:81")
+        let socket = new WebSocket("ws://192.168.100.82:81")
 
         //Datos recividos del servidor:
         socket.onmessage = (event) => { 
