@@ -93,7 +93,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       char* pasword = strtok(NULL, " "); 
 
       Serial.printf("Nombre red: %s, Contrasena: %s \n", nombre, pasword); 
-
       // Conexion a la red :
       WiFi.begin(nombre, pasword); 
       Serial.print("\n\r ....");
@@ -102,19 +101,23 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       unsigned long int actual_time = millis();
       unsigned long int prev_time = millis();
 
-      while ((WiFi.status() != WL_CONNECTED) || (time_finish != 1))
+      while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1))
       { 
         actual_time = millis();
         delay(200);
         Serial.println("No connected");
         Serial.println(time_finish);  
-        Serial.println(millis());
-        if(actual_time - prev_time > 20000){
+        Serial.println(actual_time);
+        if(actual_time - prev_time > 15000){
           prev_time = actual_time;
           time_finish = 1;
           Serial.printf("Acabo el tiempo \n");   
         } 
       }
+      
+      Serial.println("Connected to wifi"); 
+      Serial.println("ip = ");
+      Serial.println(WiFi.localIP()); 
       
       //Envia mensaje a el cliente:  
       webSockets.sendTXT(num, payload);
@@ -137,14 +140,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
 void setup() {
   Serial.begin(9600);
-
-  // WiFi.begin(ssid, password); 
-  // Serial.print("\n\r ....");
-  // while (WiFi.status() != WL_CONNECTED)
-  // {
-  //   delay(200);
-  //   Serial.print("No connected");
-  // }
 
   WiFi.softAP(ssid); 
   IPAddress miIP = WiFi.softAPIP(); //IP por default: 192.168.4.1  

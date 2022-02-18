@@ -113,7 +113,8 @@ String submit_html = R"***(
         submit.addEventListener("click", () => {
             var nombre = document.querySelector("#nombre").value
             var pasword = document.querySelector("#contrasena").value
-
+            var b = '"'; 
+            
             values = [nombre, pasword]
             socket.send(values)
             console.log(values)
