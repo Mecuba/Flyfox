@@ -113,7 +113,6 @@ String submit_html = R"***(
         submit.addEventListener("click", () => {
             var nombre = document.querySelector("#nombre").value
             var pasword = document.querySelector("#contrasena").value
-            var b = '"'; 
             
             values = [nombre, pasword]
             socket.send(values)
@@ -129,6 +128,7 @@ String submit_html = R"***(
                 // ej. El proceso del servidor se detuvo o la red está caída
                 // event.code es usualmente 1006 en este caso
                 alert('[close] La conexión se cayó');
+                
             }
         };
         
