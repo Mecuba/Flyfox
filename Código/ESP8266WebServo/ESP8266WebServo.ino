@@ -12,7 +12,7 @@ const char* ssid     = "Habia una vez";
 const char* password = "-truz, jaja";
 
 // Set AP credentials
-#define AP_SSID "Cámara Colgante"
+#define AP_SSID "Flyfox"
 #define AP_PASS "picaporte"
 
 // Set web server port number to 80
@@ -50,11 +50,9 @@ void setup() {
   Serial.print(AP_SSID);
   Serial.print(" : ");
   Serial.print(WiFi.softAPIP());
-  
+
+  delay(1000);
   server.begin();
-  
-  myservo.attach(servoPin);  // attaches the servo on the servoPin to the servo object
-  
 }
 
 void loop(){
