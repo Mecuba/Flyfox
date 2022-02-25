@@ -116,7 +116,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     // Echo text message back to client
     case WStype_TEXT:
     {
-      char str[30]; //Usado para dividir cadena de entrada. 
+      
+      char str[30]; //Usado para dividir cadena de entrada del websocket. 
       Serial.printf("[%u] Text: %s\n", num, payload);
       
       for (int i = 0; i < payloadString.length(); i++)
@@ -135,7 +136,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       int time_finish = 0; 
       unsigned long int actual_time = millis();
       unsigned long int prev_time = millis();
-
+      
       while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
       actual_time = millis();
       delay(200);
@@ -146,14 +147,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
         Serial.println("Acabo el tiempo"); 
         } 
       }
+      //No se pudo conectar: 
       if(WiFi.status() != WL_CONNECTED){
         Serial.println("No se pudo conectar"); 
         WiFi.disconnect(); 
-
-      }else{
+      }
+      //Se conecto: 
+      else{
         Serial.println("Wifi conectada en la ip 192.168.100.82");  
         ip = "192.168.100.82"; 
-        digitalWrite(D2,LOW); 
+        digitalWrite(D4,HIGH); 
       }
     }
       break;
@@ -191,7 +194,7 @@ void setup() {
   server.on("/error", error_root); 
 
   //Leds indicadores: 
-  pinMode(D2, OUTPUT);
+  pinMode(D4, OUTPUT);
 
   /// Inicio de los servidores ////
   webSockets.onEvent(webSocketEvent); 

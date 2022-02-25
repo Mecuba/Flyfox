@@ -147,7 +147,7 @@ String submit_html = R"***(
             } else {
                 // ej. El proceso del servidor se detuvo o la red está caída
                 // event.code es usualmente 1006 en este caso
-                alert('Intentando conectar, si no se puede recargue la pagina y vuelva a poner las credenciales');
+                alert('Intentando conectar, si no lo logró, recargue la pagina y vuelva a poner las credenciales');
                 recconect(); 
             }
         }
