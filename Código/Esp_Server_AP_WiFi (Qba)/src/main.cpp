@@ -8,7 +8,7 @@
 ///Pagina html index.html/// 
 #include <index.h>
 #include <submit.h>
-#include <error.h>
+#include <error.h> //Aun no esta xd 
 
 //Led de prueba: 
 #define D4 2
@@ -75,7 +75,6 @@ void AP_mode(){
   Serial.println(WiFi.localIP()); 
 }
 
-
 //Manejo de peticiones http:  
 void control_root(){
   //Interfaz de control:
@@ -94,7 +93,6 @@ void handle_root(){
 void error_root(){
   server.send(200, "text/html", error);
 }
-
 
 //Manejo de las peticiones de websockets: 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)
