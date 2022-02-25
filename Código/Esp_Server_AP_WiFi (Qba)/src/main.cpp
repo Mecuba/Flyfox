@@ -10,6 +10,8 @@
 #include <submit.h>
 #include <error.h>
 
+//pasword = 8eAYgaeY
+
 //Parametros del bot
 bool LEDonoff; 
 bool play = false;  
@@ -32,10 +34,11 @@ ESP8266WebServer server(80);
 WebSocketsServer webSockets = WebSocketsServer(81); 
 
 /// Funciones: ////
-bool connected_to_wifi(){
-  Serial.printf("nombre: %s",nombre); 
+
+bool connected_to_wifi(char* name, char* pass){
+  Serial.printf("nombre: %s",name); 
   WiFi.config(ipStatic, ipGateway, subnet);
-  WiFi.begin(nombre, password); 
+  WiFi.begin(name, pass); 
   Serial.print("\n\r ....");
   int time_finish = 0; 
   unsigned long int actual_time = millis();
@@ -44,7 +47,7 @@ bool connected_to_wifi(){
     actual_time = millis();
     delay(200);
     Serial.println("No connected");
-    if(actual_time - prev_time > 10000){
+    if(actual_time - prev_time > 15000){
       prev_time = actual_time;
       time_finish = 1;
       Serial.println("Acabo el tiempo"); 
@@ -52,6 +55,26 @@ bool connected_to_wifi(){
     } 
   }return true;
 }
+
+// void connect_to_wifi(char* name, char* pass){ 
+//   Serial.printf("nombre: %s, contraseña",name, pass); 
+//   WiFi.config(ipStatic, ipGateway, subnet);
+//   WiFi.begin(name, pass); 
+//   Serial.print("\n\r ....");
+//   int time_finish = 0; 
+//   unsigned long int actual_time = millis();
+//   unsigned long int prev_time = millis();
+//   while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
+//     actual_time = millis();
+//     delay(200);
+//     Serial.println("No connected");
+//     if(actual_time - prev_time > 15000){
+//       prev_time = actual_time;
+//       time_finish = 1;
+//       Serial.println("Acabo el tiempo"); 
+//     } 
+//   }
+// }
 
 void AP_mode(){
   WiFi.softAP(ssid); 
@@ -61,37 +84,27 @@ void AP_mode(){
   Serial.println(miIP);
   Serial.println(WiFi.localIP()); 
 }
-bool toggle_button(bool toggle){
-    if (toggle == false){ 
-      return true; 
-    }else{
-      return false;  
-    }
-}
-////
+
 
 //Manejo de peticiones http: 
-void handle_root(){
-  if(nombre != NULL){
-    server.send(200, "text/html", submit_html); 
-    if(WiFi.status() != WL_CONNECTED){
-      Serial.println("No se conecto"); 
-      server.send(200,"text/html", submit_html );
-    }  
-  }else{
-    server.send(200, "text/html", submit_html);  
-    Serial.println("Index");
-  }
-}
-
 //Interfaz de control: 
 void control_root(){
    server.send(200,"text/html", html);
 }
-
+void handle_root(){
+  String ip_AP = "192.168.4.1"; 
+  if(ip == ip_AP){
+    server.send(200, "text/html", submit_html);  
+    Serial.println("Submit");
+  }else{ 
+    server.send(200,"text/html", html);
+    Serial.println("Control root"); 
+  }
+}
 void error_root(){
   server.send(200, "text/html", error);
 }
+
 
 //Manejo de las peticiones de websockets: 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)
@@ -129,14 +142,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       }  
 
       nombre = strtok(str, ","); 
-      password = strtok(NULL, " "); 
-      Serial.printf("Nombre red: %s, Contrasena: %s \n", nombre, password); 
-      webSockets.sendTXT(num, "Conectando...");
-      Serial.printf("nombre: %s",nombre); 
+      password = strtok(NULL, "s"); 
+
+      Serial.printf("nombre: %s, contraseña: %s",nombre, password); 
       WiFi.config(ipStatic, ipGateway, subnet);
       WiFi.begin(nombre, password); 
       Serial.print("\n\r ....");
-      
       int time_finish = 0; 
       unsigned long int actual_time = millis();
       unsigned long int prev_time = millis();
@@ -144,11 +155,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       actual_time = millis();
       delay(200);
       Serial.println("No connected");
-        if(actual_time - prev_time > 10000){
-          prev_time = actual_time;
-          time_finish = 1;
-          Serial.println("Acabo el tiempo"); 
+      if(actual_time - prev_time > 13000){
+        prev_time = actual_time;
+        time_finish = 1;
+        Serial.println("Acabo el tiempo"); 
         } 
+      }
+      //connect_to_wifi(nombre, password); 
+      if(WiFi.status() != WL_CONNECTED){
+        Serial.println("No se pudo conectar"); 
+        WiFi.disconnect(); 
+      }else{
+        Serial.println("Wifi conectada en la ip 192.168.100.82"); 
       }
     }
       break;
@@ -167,20 +185,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 }
 
 
-
 void setup() {
   Serial.begin(9600);
 
   WiFiMode(WIFI_AP_STA);
   if(nombre != NULL){
-    if(connected_to_wifi() != true){
-      Serial.println("No se pudo conectar");
+    if(connected_to_wifi(nombre, password) != true){
+      Serial.println("No se pudo conectar inicio");
     }
   }
   
   AP_mode();
   /////// Manejo de las req: /////
-  Serial.println("Hndle_server");
+  Serial.println("Hadle_server");
   server.on("/", handle_root); 
   server.on("/index", control_root); 
   server.on("/error", error_root); 
