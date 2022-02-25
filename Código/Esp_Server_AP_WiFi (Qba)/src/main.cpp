@@ -13,12 +13,9 @@
 //Led de prueba: 
 #define D4 2
 
-//pasword de mi internet xd= 8eAYgaeY
-
 //Parametros del bot
-bool LEDonoff; 
 bool play = false;  
-bool toggle = false; 
+int range = 0; //Valor del slider: de 0 a 100
 
 //Parametros de red: 
 String ip ;
@@ -37,8 +34,18 @@ ESP8266WebServer server(80);
 WebSocketsServer webSockets = WebSocketsServer(81); 
 
 /// Funciones: ////
-
+bool toggle_button(String payload){
+  //Cambia el valor del estado: 
+  if (payload == "play")
+        {
+          return true;
+        }else{
+          return false;
+        }
+}
 bool connected_to_wifi(char* name, char* pass){
+  //Devuelve true si se pudo conectar: 
+
   Serial.printf("nombre: %s",name); 
   WiFi.config(ipStatic, ipGateway, subnet);
   WiFi.begin(name, pass); 
@@ -58,8 +65,8 @@ bool connected_to_wifi(char* name, char* pass){
     } 
   }return true;
 }
-
 void AP_mode(){
+  //Crea un AP: 
   WiFi.softAP(ssid); 
   IPAddress miIP = WiFi.softAPIP(); //IP por default: 192.168.4.1  
   ip = miIP.toString();
@@ -69,9 +76,9 @@ void AP_mode(){
 }
 
 
-//Manejo de peticiones http: 
-//Interfaz de control: 
+//Manejo de peticiones http:  
 void control_root(){
+  //Interfaz de control:
    server.send(200,"text/html", html);
 }
 void handle_root(){
@@ -115,48 +122,69 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
     // Echo text message back to client
     case WStype_TEXT:
-    {
-      
-      char str[30]; //Usado para dividir cadena de entrada del websocket. 
+    { 
       Serial.printf("[%u] Text: %s\n", num, payload);
-      
+      char str1[30]; //Usado para dividir cadena de entrada del websocket. 
       for (int i = 0; i < payloadString.length(); i++)
       {
-        str[i] = {payloadString[i]};
+        str1[i] = {payloadString[i]};
       }  
+      char* payloadString_first_position = strtok(str1, ",");
+      char* payloadString_second_position = strtok(NULL, "");
 
-      nombre = strtok(str, ","); 
-      password = strtok(NULL, ""); 
-
-      //Intenta conectarse a la red: 
-      Serial.printf("nombre: %s, contraseña: %s",nombre, password); 
-      WiFi.config(ipStatic, ipGateway, subnet);
-      WiFi.begin(nombre, password); 
-      Serial.print("\n\r ....");
-      int time_finish = 0; 
-      unsigned long int actual_time = millis();
-      unsigned long int prev_time = millis();
+      String payloadStringfirst = (char *)payloadString_first_position; 
+      String payloadStringsecond = (char *)payloadString_second_position;       
+      Serial.printf("payloadString_first_position: %s \n", payloadString_first_position); 
       
-      while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
-      actual_time = millis();
-      delay(200);
-      Serial.println("No connected");
-      if(actual_time - prev_time > 13000){
-        prev_time = actual_time;
-        time_finish = 1;
-        Serial.println("Acabo el tiempo"); 
-        } 
-      }
-      //No se pudo conectar: 
-      if(WiFi.status() != WL_CONNECTED){
-        Serial.println("No se pudo conectar"); 
-        WiFi.disconnect(); 
-      }
-      //Se conecto: 
-      else{
-        Serial.println("Wifi conectada en la ip 192.168.100.82");  
-        ip = "192.168.100.82"; 
-        digitalWrite(D4,HIGH); 
+      //Verifica si son valores del slider: 
+      if(payloadStringfirst == "range"){
+        range = payloadStringsecond.toInt();
+        Serial.printf("Range: %i \n", range); 
+
+      //Si es play o stop: 
+      }else if (payloadString == "play" || payloadString == "stop"){
+        play = toggle_button(payloadString);
+        Serial.println(play); 
+      //Si son credenciales de internet: 
+      }else{
+        char str[30]; //Usado para dividir cadena de entrada del websocket. 
+        for (int i = 0; i < payloadString.length(); i++)
+        {
+          str[i] = {payloadString[i]};
+        }  
+
+        nombre = strtok(str, ","); 
+        password = strtok(NULL, ""); 
+
+        //Intenta conectarse a la red: 
+        Serial.printf("nombre: %s, contraseña: %s",nombre, password); 
+        WiFi.config(ipStatic, ipGateway, subnet);
+        WiFi.begin(nombre, password); 
+        Serial.print("\n\r ....");
+        int time_finish = 0; 
+        unsigned long int actual_time = millis();
+        unsigned long int prev_time = millis();
+        while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
+        actual_time = millis();
+        delay(200);
+        Serial.println("No connected");
+        if(actual_time - prev_time > 13000){
+          prev_time = actual_time;
+          time_finish = 1;
+          Serial.println("Acabo el tiempo"); 
+          } 
+        }
+        //No se pudo conectar: 
+        if(WiFi.status() != WL_CONNECTED){
+          Serial.println("No se pudo conectar"); 
+          WiFi.disconnect(); 
+        }
+        //Se conecto: 
+        else{
+          Serial.println("Wifi conectada en la ip 192.168.100.82");  
+          ip = "192.168.100.82"; 
+          digitalWrite(D4,HIGH); 
+        }
       }
     }
       break;

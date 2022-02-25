@@ -1,5 +1,6 @@
 #include <Arduino.h>
 String submit_html = R"***(
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -147,7 +148,7 @@ String submit_html = R"***(
             } else {
                 // ej. El proceso del servidor se detuvo o la red está caída
                 // event.code es usualmente 1006 en este caso
-                alert('Intentando conectar, si no lo logró, recargue la pagina y vuelva a poner las credenciales');
+                alert('Intentando conectar, si no se puede recargue la pagina y vuelva a poner las credenciales. El led se apagará cuando se conecte a la red');
                 recconect(); 
             }
         }
@@ -163,6 +164,8 @@ String submit_html = R"***(
         })
     </script>
 </body>
+
+</html>
 
 </html>
 )***";

@@ -5,7 +5,7 @@ String html = R"***(
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Control</title>
+        <title>El inombrable</title>
     
         <style>
             .body{
@@ -185,9 +185,15 @@ String html = R"***(
                 // ej. El proceso del servidor se detuvo o la red está caída
                 // event.code es usualmente 1006 en este caso
                 alert('[close] La conexión se cayó');
+
             }
         };
                     
+        range = document.querySelector("#vel_range"); 
+        range.onchange = ()=>{
+            values = ["range", range.value]; 
+            socket.send(values); 
+        }
 
         var toggle = 0;
         //Toggle function: 
@@ -195,12 +201,12 @@ String html = R"***(
             
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
-                socket.send(1)
+                socket.send("play")
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
-                socket.send(0)
+                socket.send("stop")
                 toggle = 0
             }
         }
