@@ -187,6 +187,11 @@
             }
         };
                     
+        range = document.querySelector("#vel_range"); 
+        range.onchange = ()=>{
+            values = ["range", range.value]; 
+            socket.send(values); 
+        }
 
         var toggle = 0;
         //Toggle function: 
@@ -194,12 +199,12 @@
             
             if(toggle == 0){
                 document.querySelector(".play").className = "stop";
-                socket.send(1)
+                socket.send("play")
                 toggle = 1
             }
             else{
                 document.querySelector(".stop").className = "play";
-                socket.send(0)
+                socket.send("stop")
                 toggle = 0
             }
         }

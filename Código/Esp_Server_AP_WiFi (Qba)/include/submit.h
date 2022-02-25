@@ -125,12 +125,11 @@ String submit_html = R"***(
         </div>
         <div class="container_submits">
             <div class="submit">
-            <a href="/">
-                <input id=submit class=button type="button" value="Enter" placeholder="Enter">
-            </a>
-                <a href="index" class="Control_link" >
+                    <input id=submit class=button type="button" value="Enter" placeholder="Enter">
+                <a href="/index" class="Control_link" >
                     Usar sin red
                 </a>
+                
             </div>
         </div>
     </div>
@@ -143,35 +142,30 @@ String submit_html = R"***(
             alert(`"Mensaje: ${event.data}"`)
         }
 
-        // socket.onclose = function(event) {
-        //     if (event.wasClean) {
-        //         alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
-        //     } else {
-        //         // ej. El proceso del servidor se detuvo o la red está caída
-        //         // event.code es usualmente 1006 en este caso
-        //         alert('[close] La conexión se cayó');
-        //         recconect(); 
-        //     }
-        // }
-
-        function recconect(){
-            let socket = new WebSocket("ws://"+location.hostname+":81")   
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
+            } else {
+                // ej. El proceso del servidor se detuvo o la red está caída
+                // event.code es usualmente 1006 en este caso
+                alert('Intentando conectar, si no se puede recargue la pagina y vuelva a poner las credenciales. El led se apagará cuando se conecte a la red');
+                recconect(); 
+            }
         }
 
+        //Envio de datos
         let submit = document.getElementById("submit")
         submit.addEventListener("click", () => {
             var nombre = document.querySelector("#nombre").value
             var pasword = document.querySelector("#contrasena").value
-            
             values = [nombre, pasword];
             socket.send(values); 
-            
             console.log(values); 
-            
         })
     </script>
 </body>
 
 </html>
+
 </html>
 )***";
