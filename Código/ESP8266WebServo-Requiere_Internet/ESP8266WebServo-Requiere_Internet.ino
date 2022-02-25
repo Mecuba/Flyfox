@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <Servo.h>
 
-Servo myservo;  // create servo object to control a servo
+Servo FlyServo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
 // GPIO the servo is attached to
@@ -112,17 +112,17 @@ void loop(){
               
               if(sliderNum < 110 && sliderNum > 100) //Zona muerta para dejar quieto el servo
               {
-                myservo.detach();
+                FlyServo.detach();
                 flag = false;
               }
               else 
               {
                 if(flag == false) //Para que sólo se Attach-ee una vez saliendo de la zona muerta
                 {
-                  myservo.attach(servoPin);
+                  FlyServo.attach(servoPin);
                   flag = true;
                 }
-                myservo.write(sliderNum); //Rotate the servo
+                FlyServo.write(sliderNum); //Rotate the servo
                 Serial.println(valueString); 
               }
               
