@@ -10,7 +10,10 @@
 #include <submit.h>
 #include <error.h>
 
-//pasword = 8eAYgaeY
+//Led de prueba: 
+#define D4 2
+
+//pasword de mi internet xd= 8eAYgaeY
 
 //Parametros del bot
 bool LEDonoff; 
@@ -55,26 +58,6 @@ bool connected_to_wifi(char* name, char* pass){
     } 
   }return true;
 }
-
-// void connect_to_wifi(char* name, char* pass){ 
-//   Serial.printf("nombre: %s, contraseña",name, pass); 
-//   WiFi.config(ipStatic, ipGateway, subnet);
-//   WiFi.begin(name, pass); 
-//   Serial.print("\n\r ....");
-//   int time_finish = 0; 
-//   unsigned long int actual_time = millis();
-//   unsigned long int prev_time = millis();
-//   while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
-//     actual_time = millis();
-//     delay(200);
-//     Serial.println("No connected");
-//     if(actual_time - prev_time > 15000){
-//       prev_time = actual_time;
-//       time_finish = 1;
-//       Serial.println("Acabo el tiempo"); 
-//     } 
-//   }
-// }
 
 void AP_mode(){
   WiFi.softAP(ssid); 
@@ -142,8 +125,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       }  
 
       nombre = strtok(str, ","); 
-      password = strtok(NULL, "s"); 
+      password = strtok(NULL, ""); 
 
+      //Intenta conectarse a la red: 
       Serial.printf("nombre: %s, contraseña: %s",nombre, password); 
       WiFi.config(ipStatic, ipGateway, subnet);
       WiFi.begin(nombre, password); 
@@ -151,6 +135,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       int time_finish = 0; 
       unsigned long int actual_time = millis();
       unsigned long int prev_time = millis();
+
       while ((WiFi.status() != WL_CONNECTED) && (time_finish != 1)){ 
       actual_time = millis();
       delay(200);
@@ -161,12 +146,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
         Serial.println("Acabo el tiempo"); 
         } 
       }
-      //connect_to_wifi(nombre, password); 
       if(WiFi.status() != WL_CONNECTED){
         Serial.println("No se pudo conectar"); 
         WiFi.disconnect(); 
+
       }else{
-        Serial.println("Wifi conectada en la ip 192.168.100.82"); 
+        Serial.println("Wifi conectada en la ip 192.168.100.82");  
+        ip = "192.168.100.82"; 
+        digitalWrite(D2,LOW); 
       }
     }
       break;
@@ -189,6 +176,7 @@ void setup() {
   Serial.begin(9600);
 
   WiFiMode(WIFI_AP_STA);
+  //Intenta conectarse a una red pasada (AUN NO ESTA)
   if(nombre != NULL){
     if(connected_to_wifi(nombre, password) != true){
       Serial.println("No se pudo conectar inicio");
@@ -202,8 +190,11 @@ void setup() {
   server.on("/index", control_root); 
   server.on("/error", error_root); 
 
-  webSockets.onEvent(webSocketEvent); 
+  //Leds indicadores: 
+  pinMode(D2, OUTPUT);
+
   /// Inicio de los servidores ////
+  webSockets.onEvent(webSocketEvent); 
   server.begin();
   webSockets.begin();
   Serial.println("Server start"); 
