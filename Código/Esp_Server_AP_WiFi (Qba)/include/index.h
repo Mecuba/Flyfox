@@ -165,7 +165,7 @@ String html = R"***(
         </div>
     
         <div class="container">
-            <input type="range" name="" id="vel_range">
+            <input type="range" name="" id="vel_range" max="99">
         </div>
     </body>
     

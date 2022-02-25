@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <WebSocketsServer.h>
+#include <Servo.h>
 #include <string>
 
 ///Pagina html index.html/// 
@@ -13,16 +14,21 @@
 //Led de prueba: 
 #define D4 2
 
+//Declaramos el servo
+Servo FlyServo; //Nombre del servo
+#define servoPin D3 // El servo en el pin D3
+
 //Parametros del bot
 bool play = false;  
-int range = 0; //Valor del slider: de 0 a 100
+int range = 0; //Valor del slider: de 0 a 100* )99)
+int sliderNum = 105;
 
 //Parametros de red: 
 String ip ;
 IPAddress ipStatic(192,168,100,82);
 IPAddress ipGateway(192,168,0,1);
 IPAddress subnet(255,255,255,0); 
-const char* ssid = "EspAP"; //Nombre del punto de acceso.
+const char* ssid = "Flyfox-AP"; //Nombre del punto de acceso.
 char* password;
 char* nombre; 
 
@@ -134,15 +140,28 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       String payloadStringsecond = (char *)payloadString_second_position;       
       Serial.printf("payloadString_first_position: %s \n", payloadString_first_position); 
       
-      //Verifica si son valores del slider: 
+      //Verifica si son valores del slider: //ACÁ EDITAR PARA SERVO----------------------------------
       if(payloadStringfirst == "range"){
         range = payloadStringsecond.toInt();
         Serial.printf("Range: %i \n", range); 
+        sliderNum = map(range, 0, 99, 50, 150);
+        Serial.printf("sliderNum: %i \n", sliderNum); 
 
       //Si es play o stop: 
       }else if (payloadString == "play" || payloadString == "stop"){
         play = toggle_button(payloadString);
         Serial.println(play); 
+        if(play)
+        {
+          FlyServo.attach(servoPin);
+          FlyServo.write(sliderNum); //Rotate the servo
+          Serial.println(sliderNum); 
+        }
+        else
+        {
+          FlyServo.detach();
+        }
+
       //Si son credenciales de internet: 
       }else{
         char str[30]; //Usado para dividir cadena de entrada del websocket. 
@@ -201,7 +220,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 }
 
 
-void setup() {
+void setup() { //----------------------------------------------------------------------SETUP-------------------------------------------
   Serial.begin(9600);
 
   WiFiMode(WIFI_AP_STA);
