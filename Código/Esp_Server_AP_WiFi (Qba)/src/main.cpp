@@ -21,7 +21,7 @@ Servo FlyServo; //Nombre del servo
 //Parametros del bot
 bool play = false;  
 int range = 0; //Valor del slider: de 0 a 100* )99)
-int sliderNum = 105;
+int sliderNum = 162;
 
 //Parametros de red: 
 String ip ;
@@ -144,7 +144,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
       if(payloadStringfirst == "range"){
         range = payloadStringsecond.toInt();
         Serial.printf("Range: %i \n", range); 
-        sliderNum = map(range, 0, 99, 50, 150);
+        sliderNum = map(range, 0, 99, 144, 180);
         Serial.printf("sliderNum: %i \n", sliderNum); 
 
       //Si es play o stop: 
@@ -153,13 +153,17 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
         Serial.println(play); 
         if(play)
         {
-          FlyServo.attach(servoPin);
+          
+          //FlyServo.attach(servoPin);
+          //delay(1000);
           FlyServo.write(sliderNum); //Rotate the servo
-          Serial.println(sliderNum); 
+          Serial.println(sliderNum);
         }
         else
         {
-          FlyServo.detach();
+          FlyServo.write(162); //Rotate the servo
+          Serial.println(162);
+          //FlyServo.detach();
         }
 
       //Si son credenciales de internet: 
@@ -222,6 +226,24 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
 
 void setup() { //----------------------------------------------------------------------SETUP-------------------------------------------
   Serial.begin(9600);
+  delay(500);
+  Serial.println("Encendiendo Flyfox...");
+  FlyServo.attach(servoPin);
+  delay(100);
+  FlyServo.write(162);
+  int pos;
+
+  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    FlyServo.write(pos);              // tell servo to go to position in variable 'pos'
+    Serial.println(pos);
+    delay(200);                       // waits 15 ms for the servo to reach the position
+  }
+  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    FlyServo.write(pos);              // tell servo to go to position in variable 'pos'
+    Serial.println(pos);
+    delay(200);                       // waits 15 ms for the servo to reach the position
+  }
 
   WiFiMode(WIFI_AP_STA);
   //Intenta conectarse a una red pasada (AUN NO ESTA)
