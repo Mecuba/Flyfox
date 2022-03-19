@@ -1,4 +1,8 @@
-# Flyfox
+# Flyfox | DIY Cablecam
+![Algoaca](miniatura.png?raw=true "Thumbnail")
+Enlace al video de YouTube: https://www.youtube.com/watch?v=eEz6mBtRutU
+
+
 ![Algoaca](ensamblajeSolid.png?raw=true "Thumbnail")
 
 Repo para guardar códigos y diseños mecánicos del Flyfox.
